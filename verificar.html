@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verificar Certificado | Portal do Educador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --verde:#1a6b2a; --verde-cl:#22963a; --azul:#0f2c4a; --azul-2:#163d63;
+    --ciano:#37B1DA; --tinta:#0c1825; --papel:#f7f9fb; --papel-2:#eef2f7;
+    --linha:#e2e8f0; --tx:#1f2b3a; --tx-suave:#5b6b7d; --branco:#fff;
+    --ok:#15803d; --ok-bg:#dcfce7; --erro:#c0392b; --erro-bg:#fde8e6;
+    --sombra-md:0 4px 12px rgba(15,44,74,.08),0 12px 32px rgba(15,44,74,.10);
+    --sombra-lg:0 18px 48px rgba(15,44,74,.16); --r:18px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',system-ui,sans-serif;color:var(--tx);-webkit-font-smoothing:antialiased;
+    min-height:100vh;background:radial-gradient(120% 80% at 50% 0%,#eaf1f8,var(--papel));
+    display:flex;align-items:flex-start;justify-content:center;padding:40px 18px;}
+  h1,h2,h3{font-family:'Sora',sans-serif;margin:0;letter-spacing:-.01em;}
+  .wrap{width:100%;max-width:540px;}
+
+  .vc-head{text-align:center;margin-bottom:24px;}
+  .vc-logo{width:60px;height:60px;border-radius:50%;margin:0 auto 14px;overflow:hidden;
+    border:3px solid #fff;box-shadow:var(--sombra-md);background:var(--tinta);}
+  .vc-logo img{width:100%;height:100%;object-fit:cover;display:block;}
+  .vc-head .eyebrow{font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--verde);}
+  .vc-head h1{font-size:1.5rem;color:var(--tinta);margin-top:8px;}
+  .vc-head p{font-size:.9rem;color:var(--tx-suave);margin-top:8px;line-height:1.5;}
+
+  .vc-card{background:#fff;border:1px solid var(--linha);border-radius:var(--r);padding:26px;box-shadow:var(--sombra-md);}
+  label{display:block;font-size:.78rem;font-weight:600;margin-bottom:7px;color:var(--tx);}
+  .vc-inrow{display:flex;gap:10px;}
+  input{flex:1;padding:13px 15px;border:1px solid var(--linha);border-radius:12px;font-size:1rem;
+    font-family:'Inter';background:var(--papel);letter-spacing:.04em;text-transform:uppercase;transition:border .15s,box-shadow .15s,background .15s;}
+  input:focus{outline:none;border-color:var(--ciano);background:#fff;box-shadow:0 0 0 3px rgba(55,177,218,.16);}
+  .vc-btn{padding:13px 22px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter';font-weight:600;
+    font-size:.92rem;color:#fff;background:var(--verde);transition:background .2s,transform .1s;white-space:nowrap;}
+  .vc-btn:hover{background:var(--verde-cl);}
+  .vc-btn:active{transform:translateY(1px);}
+  .vc-btn:disabled{background:#aab6c4;cursor:not-allowed;}
+  .vc-hint{font-size:.78rem;color:var(--tx-suave);margin-top:10px;text-align:center;}
+
+  /* estados */
+  .vc-state{margin-top:20px;display:none;}
+  .vc-state.on{display:block;}
+  .vc-loading{text-align:center;color:var(--tx-suave);font-size:.9rem;padding:10px;}
+
+  .vc-result{border-radius:var(--r);overflow:hidden;border:1px solid var(--linha);}
+  .vc-result-top{padding:18px 22px;display:flex;align-items:center;gap:13px;}
+  .vc-result-top.ok{background:var(--ok-bg);}
+  .vc-result-top.no{background:var(--erro-bg);}
+  .vc-result-ico{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .vc-result-ico.ok{background:var(--ok);}
+  .vc-result-ico.no{background:var(--erro);}
+  .vc-result-ico svg{width:22px;height:22px;}
+  .vc-result-top h3{font-size:1.05rem;}
+  .vc-result-top.ok h3{color:var(--ok);}
+  .vc-result-top.no h3{color:var(--erro);}
+  .vc-result-top small{display:block;font-size:.78rem;color:var(--tx-suave);font-weight:400;margin-top:2px;font-family:'Inter';}
+
+  .vc-result-body{padding:6px 22px 20px;background:#fff;}
+  .vc-field{display:flex;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--papel-2);}
+  .vc-field:last-child{border-bottom:none;}
+  .vc-field .k{font-size:.8rem;color:var(--tx-suave);}
+  .vc-field .v{font-size:.9rem;color:var(--tx);font-weight:600;text-align:right;}
+  .vc-result-foot{padding:14px 22px;background:var(--papel);font-size:.74rem;color:var(--tx-suave);text-align:center;border-top:1px solid var(--linha);}
+
+  .vc-again{margin-top:16px;text-align:center;}
+  .vc-again button{background:none;border:none;color:var(--azul);font-size:.84rem;font-weight:600;cursor:pointer;font-family:'Inter';text-decoration:underline;}
+
+  .vc-foot{text-align:center;margin-top:22px;font-size:.76rem;color:var(--tx-suave);}
+  @media (prefers-reduced-motion: reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="vc-head">
+    <div class="vc-logo"><img id="vc-logo-img" alt="Portal do Educador"></div>
+    <div class="eyebrow">Portal do Educador</div>
+    <h1>Verificação de Certificado</h1>
+    <p>Informe o código impresso no certificado para confirmar sua autenticidade nos registros do Portal do Educador.</p>
+  </div>
+
+  <div class="vc-card">
+    <label for="vc-codigo">Código de verificação</label>
+    <div class="vc-inrow">
+      <input type="text" id="vc-codigo" placeholder="PE-XXXXXXXX" autocomplete="off" maxlength="20">
+      <button class="vc-btn" id="vc-btn" data-action="verificar">Verificar</button>
+    </div>
+    <div class="vc-hint">O código aparece no rodapé do certificado, no formato PE-XXXXXXXX.</div>
+
+    <div class="vc-state" id="vc-loading-box">
+      <div class="vc-loading">Consultando registros...</div>
+    </div>
+
+    <div class="vc-state" id="vc-result-box"></div>
+  </div>
+
+  <div class="vc-foot">NEWPC Tecnologia · CNPJ 20.892.343/0001-15</div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* =====================================================================
+   VERIFICAÇÃO DE CERTIFICADO - público (somente leitura)
+   NEWPC / Portal do Educador
+   ===================================================================== */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBCBrRIM75XZaRxTd6DNrB-sPUjVBlDfVQ",
+  authDomain: "portal-cursos-7301c.firebaseapp.com",
+  projectId: "portal-cursos-7301c",
+  storageBucket: "portal-cursos-7301c.firebasestorage.app",
+  messagingSenderId: "444401311492",
+  appId: "1:444401311492:web:88806e9c46235751e17a51"
+};
+const LOGO_B64 = "data:image/jpeg;base64,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";
+
+let db=null, fbOk=false;
+
+const SVG_OK='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const SVG_NO='<svg viewBox="0 0 24 24" fill="none"><path d="M7 7l10 10M17 7L7 17" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>';
+
+function initFirebase(){
+  try{
+    firebase.initializeApp(firebaseConfig);
+    db=firebase.firestore(); fbOk=true;
+  }catch(e){ console.error(e); }
+}
+
+function escapeHtml(s){ if(s==null)return""; return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function fmtData(ts){
+  try{
+    if(ts&&ts.toDate){ const d=ts.toDate(); return String(d.getDate()).padStart(2,'0')+"/"+String(d.getMonth()+1).padStart(2,'0')+"/"+d.getFullYear(); }
+  }catch(e){}
+  return "—";
+}
+
+function normCodigo(raw){
+  let c=(raw||"").trim().toUpperCase().replace(/\s/g,"");
+  if(c && c.indexOf("PE-")!==0 && /^[A-Z0-9]+$/.test(c)) c="PE-"+c; // tolera digitar sem o prefixo
+  return c;
+}
+
+function show(box){
+  document.getElementById("vc-loading-box").classList.toggle("on", box==="loading");
+  document.getElementById("vc-result-box").classList.toggle("on", box==="result");
+}
+
+function verificar(){
+  const codigo=normCodigo(document.getElementById("vc-codigo").value);
+  if(!codigo || codigo.length<5){ render(false); return; }
+  if(!fbOk){ render(false,"Serviço indisponível no momento."); return; }
+  document.getElementById("vc-codigo").value=codigo;
+  document.getElementById("vc-btn").disabled=true;
+  show("loading");
+  document.getElementById("vc-result-box").classList.remove("on");
+
+  db.collection("certificados").where("codigo","==",codigo).get().then(snap=>{
+    document.getElementById("vc-btn").disabled=false;
+    if(snap.empty){ render(false); return; }
+    // se houver mais de um (colisão raríssima), pega o mais recente
+    let docs=[]; snap.forEach(d=> docs.push(d.data()));
+    docs.sort((a,b)=>{
+      const ta=a.emitido_em&&a.emitido_em.seconds?a.emitido_em.seconds:0;
+      const tb=b.emitido_em&&b.emitido_em.seconds?b.emitido_em.seconds:0;
+      return tb-ta;
+    });
+    render(true, null, docs[0], codigo);
+  }).catch(e=>{
+    console.error(e); document.getElementById("vc-btn").disabled=false; render(false,"Não foi possível consultar agora.");
+  });
+}
+
+function render(valido, msgErro, cert, codigo){
+  const box=document.getElementById("vc-result-box");
+  show("result");
+  if(valido && cert){
+    box.innerHTML=`
+      <div class="vc-result">
+        <div class="vc-result-top ok">
+          <div class="vc-result-ico ok">${SVG_OK}</div>
+          <div><h3>Certificado válido</h3><small>Registro confirmado nos arquivos do Portal do Educador</small></div>
+        </div>
+        <div class="vc-result-body">
+          <div class="vc-field"><span class="k">Nome</span><span class="v">${escapeHtml(cert.cursista_nome||"—")}</span></div>
+          <div class="vc-field"><span class="k">Curso</span><span class="v">${escapeHtml(cert.curso_titulo||"—")}</span></div>
+          <div class="vc-field"><span class="k">Carga horária</span><span class="v">${cert.carga_horaria||0} horas</span></div>
+          <div class="vc-field"><span class="k">Emitido em</span><span class="v">${fmtData(cert.emitido_em)}</span></div>
+        </div>
+        <div class="vc-result-foot">Código ${escapeHtml(codigo||"")}</div>
+      </div>
+      <div class="vc-again"><button data-action="nova-consulta">Verificar outro código</button></div>`;
+  }else{
+    box.innerHTML=`
+      <div class="vc-result">
+        <div class="vc-result-top no">
+          <div class="vc-result-ico no">${SVG_NO}</div>
+          <div><h3>Certificado não encontrado</h3><small>${escapeHtml(msgErro||"Nenhum registro corresponde a este código.")}</small></div>
+        </div>
+        <div class="vc-result-body">
+          <div class="vc-field"><span class="k">O que fazer</span><span class="v" style="font-weight:400;max-width:60%;">Confira se o código foi digitado corretamente, exatamente como aparece no certificado.</span></div>
+        </div>
+      </div>
+      <div class="vc-again"><button data-action="nova-consulta">Tentar novamente</button></div>`;
+  }
+}
+
+function novaConsulta(){
+  show("");
+  document.getElementById("vc-result-box").classList.remove("on");
+  const inp=document.getElementById("vc-codigo"); inp.value=""; inp.focus();
+}
+
+/* ---------- listener ---------- */
+document.addEventListener("click",function(ev){
+  const el=ev.target.closest("[data-action]"); if(!el)return;
+  const a=el.getAttribute("data-action");
+  if(a==="verificar") verificar();
+  else if(a==="nova-consulta") novaConsulta();
+});
+document.getElementById("vc-codigo").addEventListener("keydown",function(ev){ if(ev.key==="Enter") verificar(); });
+
+/* ---------- boot ---------- */
+document.getElementById("vc-logo-img").src=LOGO_B64;
+initFirebase();
+/* aceita código pela URL: ?codigo=PE-XXXX (futuro QR) */
+(function(){
+  const params=new URLSearchParams(window.location.search);
+  const c=params.get("codigo")||params.get("id");
+  if(c){ document.getElementById("vc-codigo").value=c; setTimeout(verificar, 400); }
+})();
+</script>
+</body>
+</html>
