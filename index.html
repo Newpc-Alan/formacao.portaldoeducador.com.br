@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trilha de Cursos - Portal do Educador</title>
+<style>
+  html,body{background:transparent !important; height:auto !important;}
+  #pde-painel{
+    --verde:#1a6b2a;
+    --verde-d:#13501f;
+    --azul:#0f2c4a;
+    --azul-c:#37B1DA;
+    --cinza-bg:#f3f4f6;
+    --cinza-bd:#e5e7eb;
+    --cinza-tx:#4b5563;
+    --ok:#15803d;
+    --erro:#b91c1c;
+    font-family:'Segoe UI',Roboto,sans-serif;
+    color:#111827;
+    max-width:980px;
+    margin:0 auto;
+    padding:6px;
+  }
+  #pde-painel *{box-sizing:border-box;}
+
+  #pde-painel .pde-brandbar{display:flex;height:5px;border-radius:999px;overflow:hidden;margin-bottom:12px;}
+  #pde-painel .pde-brandbar span{flex:1;}
+  #pde-painel .bb-verde{background:var(--verde);}
+  #pde-painel .bb-azul{background:var(--azul);}
+  #pde-painel .bb-ciano{background:var(--azul-c);}
+
+  #pde-painel h2{margin:0 0 6px;font-size:1.4rem;color:var(--azul);}
+  #pde-painel .pde-lead{font-size:.88rem;color:var(--cinza-tx);margin:0 0 16px;line-height:1.5;}
+
+  #pde-painel .pde-card{
+    background:#fff;border:1px solid var(--cinza-bd);border-radius:14px;
+    padding:16px;margin-bottom:16px;
+  }
+  #pde-painel .pde-card h3{margin:0 0 10px;font-size:1rem;color:var(--azul);}
+
+  /* ===== SELEÇÃO DE CURSO ===== */
+  #pde-painel .pde-course-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;
+  }
+  #pde-painel .pde-course-card{
+    border:1px solid var(--cinza-bd);border-radius:12px;overflow:hidden;
+    background:#fff;display:flex;flex-direction:column;
+  }
+  #pde-painel .pde-course-capa{
+    height:110px;background:var(--azul) center/cover;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+    font-size:.85rem;text-align:center;padding:8px;
+  }
+  #pde-painel .pde-course-info{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  #pde-painel .pde-course-info h4{margin:0;font-size:.95rem;color:#111827;}
+  #pde-painel .pde-course-info p{margin:0;font-size:.78rem;color:var(--cinza-tx);flex:1;}
+  #pde-painel .pde-course-meta{font-size:.72rem;color:var(--cinza-tx);}
+
+  /* ===== TRILHA / MÓDULOS ===== */
+  #pde-painel .pde-trail-list{display:flex;flex-direction:column;gap:8px;}
+  #pde-painel .pde-mod{
+    display:flex;align-items:center;gap:10px;
+    border:1px solid var(--cinza-bd);border-radius:10px;padding:10px 12px;background:#f9fafb;
+    cursor:pointer;
+  }
+  #pde-painel .pde-mod.pde-mod-atual{border-color:var(--verde);background:#f0fdf4;}
+  #pde-painel .pde-mod.pde-mod-bloq{opacity:.55;cursor:not-allowed;}
+  #pde-painel .pde-mod-ico{
+    width:26px;height:26px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;
+    background:var(--cinza-bd);color:var(--cinza-tx);
+  }
+  #pde-painel .pde-mod-ico.ic-ok{background:var(--ok);color:#fff;}
+  #pde-painel .pde-mod-ico.ic-atual{background:var(--verde);color:#fff;}
+  #pde-painel .pde-mod-txt{flex:1;min-width:0;}
+  #pde-painel .pde-mod-txt strong{font-size:.86rem;display:block;}
+  #pde-painel .pde-mod-txt span{font-size:.74rem;color:var(--cinza-tx);}
+
+  /* ===== PLAYER ===== */
+  #pde-painel .pde-current{font-size:.9rem;font-weight:600;margin-bottom:8px;color:#111827;}
+  #pde-painel .pde-video-wrap{
+    position:relative;width:100%;padding-bottom:56.25%;background:#000;
+    border-radius:10px;overflow:hidden;
+  }
+  #pde-painel #pdePlayer{position:absolute;inset:0;width:100%;height:100%;}
+  #pde-painel .pde-prog-label{margin-top:9px;font-size:.82rem;color:var(--cinza-tx);}
+  #pde-painel .pde-prog-bar{height:6px;width:100%;background:#ddd;border-radius:999px;overflow:hidden;margin-top:4px;}
+  #pde-painel .pde-prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--verde),var(--azul-c));transition:width .3s;}
+
+  /* ===== BOTÕES ===== */
+  #pde-painel .pde-btn{
+    padding:9px 18px;border-radius:999px;border:none;cursor:pointer;
+    font-weight:700;font-size:.85rem;color:#fff;background:var(--verde);
+  }
+  #pde-painel .pde-btn:hover{background:var(--verde-d);}
+  #pde-painel .pde-btn:disabled{background:#9ca3af;cursor:not-allowed;}
+  #pde-painel .pde-btn-azul{background:var(--azul);}
+  #pde-painel .pde-btn-azul:hover{background:#0a1f36;}
+  #pde-painel .pde-btn-ghost{background:#eef2f7;color:var(--azul);}
+
+  /* ===== IDENTIFICAÇÃO ===== */
+  #pde-painel label{display:block;font-size:.82rem;font-weight:600;margin-bottom:4px;color:#374151;}
+  #pde-painel input{
+    width:100%;padding:9px 11px;border:1px solid #d1d5db;border-radius:8px;
+    font-size:.9rem;margin-bottom:12px;font-family:inherit;
+  }
+  #pde-painel .pde-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:600px){#pde-painel .pde-grid2{grid-template-columns:1fr;}}
+
+  /* ===== QUIZ ===== */
+  #pde-painel .pde-q{font-size:1rem;font-weight:700;margin-bottom:12px;}
+  #pde-painel .pde-q-counter{font-size:.78rem;color:var(--cinza-tx);margin-bottom:6px;}
+  #pde-painel .pde-opt{
+    width:100%;text-align:left;padding:11px 13px;margin-bottom:8px;
+    border:1px solid #ccc;background:#fff;border-radius:8px;cursor:pointer;font-size:.9rem;
+  }
+  #pde-painel .pde-opt:hover{background:#eef2f7;}
+  #pde-painel .pde-opt.pde-opt-sel{border-color:var(--azul);background:#e0f2fe;}
+
+  #pde-painel .pde-result-big{font-size:2.4rem;font-weight:800;text-align:center;margin:6px 0;}
+  #pde-painel .pde-result-ok{color:var(--ok);}
+  #pde-painel .pde-result-no{color:var(--erro);}
+
+  #pde-painel .pde-empty{font-size:.86rem;color:var(--cinza-tx);font-style:italic;padding:12px 0;}
+  #pde-painel .pde-badge{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:999px;background:#e0f2fe;color:#075985;}
+  #pde-painel .pde-hint{font-size:.78rem;color:var(--cinza-tx);margin-top:8px;}
+  #pde-painel .pde-center{text-align:center;}
+  #pde-painel .pde-mt{margin-top:14px;}
+
+  #pde-toast{
+    position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+    background:var(--azul);color:#fff;padding:11px 18px;border-radius:10px;font-size:.85rem;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .25s;z-index:9999;
+  }
+  #pde-toast.cc-show{opacity:1;}
+</style>
+</head>
+<body>
+<div id="pde-painel">
+  <div class="pde-brandbar"><span class="bb-verde"></span><span class="bb-azul"></span><span class="bb-ciano"></span></div>
+
+  <!-- ===== TELA 1: SELEÇÃO DE CURSO ===== -->
+  <div id="pde-tela-cursos">
+    <h2>Cursos do Portal do Educador</h2>
+    <p class="pde-lead">Escolha um curso para iniciar a formação. Ao concluir os módulos e a avaliação final, você poderá emitir seu certificado.</p>
+    <div id="pde-cursos-grid" class="pde-course-grid">
+      <div class="pde-empty">Carregando cursos...</div>
+    </div>
+  </div>
+
+  <!-- ===== TELA 2: IDENTIFICAÇÃO ===== -->
+  <div id="pde-tela-ident" style="display:none;">
+    <div class="pde-card">
+      <h3>Identificação do cursista</h3>
+      <p class="pde-lead" id="pde-ident-curso">Para acompanhar seu progresso e emitir o certificado, informe seus dados.</p>
+      <div class="pde-grid2">
+        <div><label>Nome completo</label><input type="text" id="id-nome" placeholder="Seu nome"></div>
+        <div><label>E-mail</label><input type="email" id="id-email" placeholder="seu@email.com"></div>
+      </div>
+      <div class="pde-grid2">
+        <div><label>Escola / Rede</label><input type="text" id="id-escola" placeholder="Ex.: Escola Municipal X"></div>
+        <div><label>Município / Estado</label><input type="text" id="id-cidade" placeholder="Ex.: Amambai/MS"></div>
+      </div>
+      <div class="pde-hint">Use sempre o mesmo e-mail para retomar o curso em qualquer dispositivo.</div>
+      <div class="pde-mt">
+        <button class="pde-btn" data-action="iniciar-curso">Iniciar curso</button>
+        <button class="pde-btn pde-btn-ghost" data-action="voltar-cursos">Voltar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TELA 3: TRILHA + PLAYER ===== -->
+  <div id="pde-tela-trilha" style="display:none;">
+    <div class="pde-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+        <h3 id="pde-trilha-titulo" style="margin:0;">Curso</h3>
+        <button class="pde-btn pde-btn-ghost" data-action="voltar-cursos" style="padding:5px 12px;font-size:.78rem;">Trocar de curso</button>
+      </div>
+      <p class="pde-lead" id="pde-trilha-prog" style="margin:8px 0 0;"></p>
+    </div>
+
+    <div class="pde-card">
+      <h3>Módulos</h3>
+      <div id="pde-trail-list" class="pde-trail-list"></div>
+    </div>
+
+    <div class="pde-card">
+      <div class="pde-current" id="pde-current-label">Selecione um módulo</div>
+      <div class="pde-video-wrap"><div id="pdePlayer"></div></div>
+      <div class="pde-prog-label" id="pde-video-label">0% assistido</div>
+      <div class="pde-prog-bar"><div class="pde-prog-fill" id="pde-video-fill"></div></div>
+      <div class="pde-mt" id="pde-mod-action"></div>
+    </div>
+
+    <div class="pde-card pde-center" id="pde-eval-cta">
+      <h3>Avaliação final</h3>
+      <p class="pde-lead" id="pde-eval-status">Conclua todos os módulos para liberar a avaliação.</p>
+      <button class="pde-btn pde-btn-azul" id="pde-btn-eval" data-action="iniciar-prova" disabled>Iniciar avaliação</button>
+    </div>
+  </div>
+
+  <!-- ===== TELA 4: QUIZ ===== -->
+  <div id="pde-tela-quiz" style="display:none;">
+    <div class="pde-card">
+      <h3>Avaliação final</h3>
+      <div class="pde-q-counter" id="pde-q-counter"></div>
+      <div class="pde-prog-bar"><div class="pde-prog-fill" id="pde-quiz-fill"></div></div>
+      <div id="pde-quiz-area" class="pde-mt"></div>
+      <div class="pde-mt" id="pde-quiz-nav"></div>
+    </div>
+  </div>
+
+  <!-- ===== TELA 5: RESULTADO ===== -->
+  <div id="pde-tela-result" style="display:none;">
+    <div class="pde-card pde-center">
+      <h3>Resultado da avaliação</h3>
+      <div class="pde-result-big" id="pde-result-pct">0%</div>
+      <p class="pde-lead pde-center" id="pde-result-msg"></p>
+      <div id="pde-result-actions" class="pde-mt"></div>
+    </div>
+  </div>
+</div>
+
+<div id="pde-toast"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+/* =====================================================================
+   TRILHA DE CURSOS - PLAYER (Fase 2)
+   NEWPC / Portal do Educador
+   Sequencial (90% libera próximo) + progresso no Firestore + embed Webnode
+   ===================================================================== */
+
+/* ---------- CONFIG: MESMO PROJETO DO ADMIN ---------- */
+const firebaseConfig = {
+  apiKey: "AIzaSyBCBrRIM75XZaRxTd6DNrB-sPUjVBlDfVQ",
+  authDomain: "portal-cursos-7301c.firebaseapp.com",
+  projectId: "portal-cursos-7301c",
+  storageBucket: "portal-cursos-7301c.firebasestorage.app",
+  messagingSenderId: "444401311492",
+  appId: "1:444401311492:web:88806e9c46235751e17a51"
+};
+const LIMIAR_VIDEO = 90;   // % p/ considerar módulo concluído
+const MAX_QUESTOES = 20;   // teto de questões na prova
+/* --------------------------------------------------- */
+
+let db=null, fbOk=false;
+let cursos=[], cursoAtivo=null, modulos=[], questoes=[];
+let matricula=null, matriculaId=null;
+let player=null, duration=0, moduloAtualIdx=0, videoPct=0;
+let quizQuestoes=[], qi=0, respostas=[];
+
+/* ---------- INIT ---------- */
+function initFirebase(){
+  try{
+    if(firebaseConfig.apiKey.indexOf("COLE_AQUI")===0){
+      document.getElementById("pde-cursos-grid").innerHTML =
+        '<div class="pde-empty">Config do Firebase pendente. Cole o firebaseConfig no código.</div>';
+      return;
+    }
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    fbOk = true;
+    carregarCursos();
+  }catch(e){ console.error(e); }
+}
+
+/* ---------- UTIL ---------- */
+function toast(m){ const t=document.getElementById("pde-toast"); t.textContent=m; t.className="cc-show"; setTimeout(()=>t.className="",2400); }
+function val(id){ return (document.getElementById(id).value||"").trim(); }
+function normEmail(e){ return (e||"").trim().toLowerCase(); }
+function escapeHtml(s){ if(s==null)return""; return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function agora(){ return firebase.firestore.FieldValue.serverTimestamp(); }
+function tela(nome){
+  ["cursos","ident","trilha","quiz","result"].forEach(t=>{
+    document.getElementById("pde-tela-"+t).style.display = (t===nome ? "block":"none");
+  });
+  reportarAltura();
+}
+
+/* ---------- CURSOS ---------- */
+function carregarCursos(){
+  db.collection("cursos").where("ativo","==",true).where("status","==","publicado").get().then(snap=>{
+    cursos=[]; snap.forEach(d=> cursos.push(Object.assign({id:d.id},d.data())));
+    cursos.sort((a,b)=>(a.titulo||"").localeCompare(b.titulo||""));
+    renderCursos();
+  }).catch(e=>{ console.error(e);
+    document.getElementById("pde-cursos-grid").innerHTML='<div class="pde-empty">Erro ao carregar cursos.</div>'; });
+}
+
+function renderCursos(){
+  const g=document.getElementById("pde-cursos-grid");
+  if(!cursos.length){ g.innerHTML='<div class="pde-empty">Nenhum curso publicado no momento.</div>'; reportarAltura(); return; }
+  g.innerHTML = cursos.map(c=>{
+    const capa = c.capa_url
+      ? `style="background-image:url('${escapeHtml(c.capa_url)}')"` : "";
+    const capaTxt = c.capa_url ? "" : escapeHtml(c.titulo);
+    return `
+      <div class="pde-course-card">
+        <div class="pde-course-capa" ${capa}>${capaTxt}</div>
+        <div class="pde-course-info">
+          <h4>${escapeHtml(c.titulo)}</h4>
+          <p>${escapeHtml(c.descricao||"")}</p>
+          <div class="pde-course-meta">${c.carga_horaria||0}h &middot; nota mín. ${c.nota_minima||70}%</div>
+          <button class="pde-btn pde-mt" data-action="abrir-curso" data-id="${c.id}">Acessar</button>
+        </div>
+      </div>`;
+  }).join("");
+  reportarAltura();
+}
+
+function abrirCurso(id){
+  cursoAtivo = cursos.find(c=>c.id===id);
+  if(!cursoAtivo) return;
+  document.getElementById("pde-ident-curso").textContent =
+    'Curso: "' + cursoAtivo.titulo + '". Informe seus dados para iniciar e salvar seu progresso.';
+  // pré-preenche se já houver matrícula no localStorage (atalho de conveniência)
+  const cache = lerCacheIdent();
+  if(cache){ document.getElementById("id-nome").value=cache.nome||"";
+    document.getElementById("id-email").value=cache.email||"";
+    document.getElementById("id-escola").value=cache.escola||"";
+    document.getElementById("id-cidade").value=cache.cidade||""; }
+  tela("ident");
+}
+
+/* ---------- IDENTIFICAÇÃO / MATRÍCULA ---------- */
+function lerCacheIdent(){
+  try{ return JSON.parse(localStorage.getItem("pde_ident")||"null"); }catch(e){ return null; }
+}
+function salvarCacheIdent(o){
+  try{ localStorage.setItem("pde_ident", JSON.stringify(o)); }catch(e){}
+}
+
+function iniciarCurso(){
+  const nome=val("id-nome"), email=normEmail(val("id-email")),
+        escola=val("id-escola"), cidade=val("id-cidade");
+  if(!nome||!email||!escola||!cidade) return toast("Preencha todos os campos.");
+  if(email.indexOf("@")<0||email.indexOf(".")<0) return toast("E-mail inválido.");
+
+  salvarCacheIdent({nome,email,escola,cidade});
+
+  // chave estável: cursoId + email normalizado
+  matriculaId = cursoAtivo.id + "__" + email.replace(/[^a-z0-9]/g,"_");
+
+  const ref = db.collection("matriculas").doc(matriculaId);
+  ref.get().then(doc=>{
+    if(doc.exists){
+      matricula = doc.data();
+    }else{
+      matricula = {
+        curso_id: cursoAtivo.id,
+        municipio_id: cursoAtivo.municipio_id||"GERAL",
+        cursista_nome: nome, cursista_email: email,
+        cursista_escola: escola, cursista_cidade: cidade,
+        modulos_vistos: [], nota:0, percentual:0,
+        concluido:false, iniciado_em: agora(), atualizado_em: agora()
+      };
+      return ref.set(matricula);
+    }
+  }).then(()=> carregarConteudoCurso())
+    .catch(e=>{ console.error(e); toast("Erro ao iniciar curso."); });
+}
+
+/* ---------- CONTEÚDO DO CURSO ---------- */
+function carregarConteudoCurso(){
+  Promise.all([
+    db.collection("modulos").where("curso_id","==",cursoAtivo.id).where("ativo","==",true).get(),
+    db.collection("questoes").where("curso_id","==",cursoAtivo.id).where("ativo","==",true).get()
+  ]).then(([ms,qs])=>{
+    modulos=[]; ms.forEach(d=> modulos.push(Object.assign({id:d.id},d.data())));
+    modulos.sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+    questoes=[]; qs.forEach(d=> questoes.push(Object.assign({id:d.id},d.data())));
+
+    if(!modulos.length){ toast("Curso sem módulos ainda."); tela("cursos"); return; }
+
+    document.getElementById("pde-trilha-titulo").textContent = cursoAtivo.titulo;
+    // posiciona no primeiro módulo não concluído
+    moduloAtualIdx = primeiroNaoConcluido();
+    tela("trilha");
+    renderTrilha();
+    setModulo(moduloAtualIdx, false);
+    atualizarEstadoProva();
+  }).catch(e=>{ console.error(e); toast("Erro ao carregar conteúdo."); });
+}
+
+function modVisto(modId){ return (matricula.modulos_vistos||[]).indexOf(modId)>=0; }
+
+function primeiroNaoConcluido(){
+  for(let i=0;i<modulos.length;i++){ if(!modVisto(modulos[i].id)) return i; }
+  return modulos.length-1; // todos vistos: fica no último
+}
+
+function moduloLiberado(idx){
+  if(idx===0) return true;
+  // liberado se todos os anteriores foram vistos
+  for(let i=0;i<idx;i++){ if(!modVisto(modulos[i].id)) return false; }
+  return true;
+}
+
+function renderTrilha(){
+  const vistos=(matricula.modulos_vistos||[]).length;
+  document.getElementById("pde-trilha-prog").textContent =
+    vistos + " de " + modulos.length + " módulos concluídos.";
+
+  const list=document.getElementById("pde-trail-list");
+  list.innerHTML = modulos.map((m,i)=>{
+    const visto=modVisto(m.id);
+    const atual=(i===moduloAtualIdx);
+    const liberado=moduloLiberado(i);
+    let ico, icoCls, cls="";
+    if(visto){ ico="&#10003;"; icoCls="ic-ok"; }
+    else if(atual){ ico=(i+1); icoCls="ic-atual"; }
+    else{ ico=liberado?(i+1):"&#128274;"; icoCls=""; }
+    if(atual) cls=" pde-mod-atual";
+    if(!liberado && !visto) cls=" pde-mod-bloq";
+    const clickable = (liberado||visto);
+    return `
+      <div class="pde-mod${cls}" ${clickable?`data-action="ir-modulo" data-idx="${i}"`:""}>
+        <div class="pde-mod-ico ${icoCls}">${ico}</div>
+        <div class="pde-mod-txt">
+          <strong>${i+1}. ${escapeHtml(m.titulo)}</strong>
+          <span>${escapeHtml(m.subtitulo||"")}</span>
+        </div>
+      </div>`;
+  }).join("");
+  reportarAltura();
+}
+
+/* ---------- PLAYER YOUTUBE ---------- */
+function onYouTubeIframeAPIReady(){ /* player criado sob demanda em setModulo */ }
+
+function setModulo(idx, autoplay){
+  if(!moduloLiberado(idx) && !modVisto(modulos[idx].id)){ toast("Conclua o módulo anterior primeiro."); return; }
+  moduloAtualIdx = idx;
+  const m = modulos[idx];
+  document.getElementById("pde-current-label").textContent = "Módulo "+(idx+1)+" – "+m.titulo;
+  videoPct = modVisto(m.id)?100:0;
+  pintarVideoProg(videoPct);
+  renderTrilha();
+  renderAcaoModulo();
+
+  if(!player){
+    player = new YT.Player("pdePlayer",{
+      videoId:m.youtube_id,
+      playerVars:{rel:0,modestbranding:1},
+      events:{ onReady:e=>{ duration=e.target.getDuration(); if(!window._pdeTick){ window._pdeTick=setInterval(tickVideo,1000);} if(autoplay) e.target.playVideo(); },
+               onStateChange:onState }
+    });
+  }else{
+    duration=0;
+    player.loadVideoById(m.youtube_id);
+  }
+}
+
+function onState(e){
+  if(e.data===YT.PlayerState.ENDED){ marcarVideoPct(100); }
+}
+
+function tickVideo(){
+  if(!player||typeof player.getCurrentTime!=="function") return;
+  if(!duration||duration===0){ const d=player.getDuration(); if(d>0)duration=d; else return; }
+  const cur=player.getCurrentTime()||0;
+  let pct=Math.round((cur/duration)*100); if(pct>100)pct=100;
+  marcarVideoPct(pct);
+}
+
+function marcarVideoPct(pct){
+  const m=modulos[moduloAtualIdx];
+  if(modVisto(m.id)){ videoPct=100; pintarVideoProg(100); return; }
+  videoPct=pct; pintarVideoProg(pct);
+  if(pct>=LIMIAR_VIDEO){ concluirModulo(m); }
+}
+
+function pintarVideoProg(pct){
+  document.getElementById("pde-video-fill").style.width=pct+"%";
+  document.getElementById("pde-video-label").textContent=pct+"% assistido";
+}
+
+function concluirModulo(m){
+  if(modVisto(m.id)) return;
+  matricula.modulos_vistos=(matricula.modulos_vistos||[]).concat([m.id]);
+  db.collection("matriculas").doc(matriculaId).update({
+    modulos_vistos: matricula.modulos_vistos, atualizado_em: agora()
+  }).then(()=>{
+    toast("Módulo concluído!");
+    renderTrilha(); renderAcaoModulo(); atualizarEstadoProva();
+  }).catch(e=>console.error(e));
+}
+
+function renderAcaoModulo(){
+  const box=document.getElementById("pde-mod-action");
+  const temProximo = moduloAtualIdx < modulos.length-1;
+  const atualVisto = modVisto(modulos[moduloAtualIdx].id);
+  if(atualVisto && temProximo){
+    box.innerHTML='<button class="pde-btn" data-action="proximo-modulo">Próximo módulo &rarr;</button>';
+  }else if(atualVisto && !temProximo){
+    box.innerHTML='<span class="pde-badge">Último módulo concluído. Avaliação liberada abaixo.</span>';
+  }else{
+    box.innerHTML='<span class="pde-hint">Assista a pelo menos '+LIMIAR_VIDEO+'% do vídeo para liberar o próximo.</span>';
+  }
+}
+
+/* ---------- PROVA ---------- */
+function todosConcluidos(){
+  return modulos.every(m=> modVisto(m.id));
+}
+
+function atualizarEstadoProva(){
+  const btn=document.getElementById("pde-btn-eval");
+  const st=document.getElementById("pde-eval-status");
+  if(!questoes.length){
+    st.textContent="Este curso ainda não tem avaliação cadastrada.";
+    btn.disabled=true; reportarAltura(); return;
+  }
+  if(todosConcluidos()){
+    st.textContent="Todos os módulos concluídos. Você pode iniciar a avaliação.";
+    btn.disabled=false;
+  }else{
+    st.textContent="Conclua todos os módulos para liberar a avaliação.";
+    btn.disabled=true;
+  }
+  reportarAltura();
+}
+
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function iniciarProva(){
+  if(!todosConcluidos()) return toast("Conclua todos os módulos.");
+  const n=Math.min(MAX_QUESTOES, questoes.length);
+  quizQuestoes = shuffle(questoes).slice(0,n).map(q=>{
+    const ordem=shuffle([0,1,2,3]);
+    return { enunciado:q.enunciado, alternativas:q.alternativas, correta:q.correta, ordem:ordem };
+  });
+  qi=0; respostas=new Array(quizQuestoes.length).fill(null);
+  tela("quiz");
+  renderQuestao();
+}
+
+function renderQuestao(){
+  const q=quizQuestoes[qi];
+  document.getElementById("pde-q-counter").textContent="Questão "+(qi+1)+" de "+quizQuestoes.length;
+  document.getElementById("pde-quiz-fill").style.width=Math.round((qi/quizQuestoes.length)*100)+"%";
+
+  let html='<div class="pde-q">'+escapeHtml(q.enunciado)+'</div>';
+  q.ordem.forEach((origIdx,pos)=>{
+    const sel=(respostas[qi]===origIdx)?" pde-opt-sel":"";
+    html+='<button class="pde-opt'+sel+'" data-action="marcar-opt" data-orig="'+origIdx+'">'+escapeHtml(q.alternativas[origIdx])+'</button>';
+  });
+  document.getElementById("pde-quiz-area").innerHTML=html;
+
+  const nav=document.getElementById("pde-quiz-nav");
+  const ultima=(qi===quizQuestoes.length-1);
+  nav.innerHTML =
+    (qi>0?'<button class="pde-btn pde-btn-ghost" data-action="quiz-voltar">Voltar</button> ':'')+
+    (ultima
+      ? '<button class="pde-btn pde-btn-azul" data-action="quiz-finalizar">Finalizar avaliação</button>'
+      : '<button class="pde-btn" data-action="quiz-proxima">Próxima</button>');
+  reportarAltura();
+}
+
+function marcarOpt(origIdx){ respostas[qi]=origIdx; renderQuestao(); }
+function quizProxima(){ if(respostas[qi]===null) return toast("Selecione uma resposta."); if(qi<quizQuestoes.length-1){qi++;renderQuestao();} }
+function quizVoltar(){ if(qi>0){qi--;renderQuestao();} }
+
+function quizFinalizar(){
+  if(respostas[qi]===null) return toast("Selecione uma resposta.");
+  let acertos=0;
+  quizQuestoes.forEach((q,i)=>{ if(respostas[i]===q.correta) acertos++; });
+  const pct=Math.round((acertos/quizQuestoes.length)*100);
+  const aprovado = pct >= (cursoAtivo.nota_minima||70);
+
+  db.collection("matriculas").doc(matriculaId).update({
+    nota:pct, percentual:pct, concluido:aprovado,
+    concluido_em: aprovado?agora():null, atualizado_em:agora()
+  }).catch(e=>console.error(e));
+
+  document.getElementById("pde-result-pct").textContent=pct+"%";
+  document.getElementById("pde-result-pct").className="pde-result-big "+(aprovado?"pde-result-ok":"pde-result-no");
+  document.getElementById("pde-result-msg").textContent = aprovado
+    ? "Aprovado! Você acertou "+acertos+" de "+quizQuestoes.length+" questões e atingiu a nota mínima."
+    : "Você acertou "+acertos+" de "+quizQuestoes.length+" ("+pct+"%). Nota mínima: "+(cursoAtivo.nota_minima||70)+"%. Reveja os módulos e tente novamente.";
+
+  const act=document.getElementById("pde-result-actions");
+  act.innerHTML = aprovado
+    ? '<span class="pde-badge">Certificado disponível na próxima fase do sistema.</span><div class="pde-mt"><button class="pde-btn pde-btn-ghost" data-action="voltar-cursos">Voltar aos cursos</button></div>'
+    : '<button class="pde-btn" data-action="refazer-prova">Refazer avaliação</button> <button class="pde-btn pde-btn-ghost" data-action="rever-modulos">Rever módulos</button>';
+  tela("result");
+}
+
+/* ---------- NAV ---------- */
+function voltarCursos(){ tela("cursos"); }
+
+/* ---------- AUTO-RESIZE (Webnode) ---------- */
+function reportarAltura(){
+  const painel=document.getElementById("pde-painel");
+  if(!painel) return;
+  // altura baseada no último elemento visível do painel
+  const filhos=painel.children;
+  let ultimo=null;
+  for(let i=filhos.length-1;i>=0;i--){ if(filhos[i].offsetParent!==null){ ultimo=filhos[i]; break; } }
+  const altura = ultimo ? (ultimo.offsetTop+ultimo.offsetHeight+24) : painel.offsetHeight;
+  try{ window.parent.postMessage({tipo:"pde-altura", altura:altura}, "*"); }catch(e){}
+}
+window.addEventListener("load", reportarAltura);
+window.addEventListener("resize", reportarAltura);
+
+/* ---------- LISTENER ÚNICO ---------- */
+document.addEventListener("click", function(ev){
+  const el=ev.target.closest("[data-action]");
+  if(!el) return;
+  const a=el.getAttribute("data-action");
+  switch(a){
+    case "abrir-curso": abrirCurso(el.getAttribute("data-id")); break;
+    case "voltar-cursos": voltarCursos(); break;
+    case "iniciar-curso": iniciarCurso(); break;
+    case "ir-modulo": setModulo(parseInt(el.getAttribute("data-idx"),10), true); break;
+    case "proximo-modulo": if(moduloAtualIdx<modulos.length-1) setModulo(moduloAtualIdx+1, true); break;
+    case "iniciar-prova": iniciarProva(); break;
+    case "marcar-opt": marcarOpt(parseInt(el.getAttribute("data-orig"),10)); break;
+    case "quiz-proxima": quizProxima(); break;
+    case "quiz-voltar": quizVoltar(); break;
+    case "quiz-finalizar": quizFinalizar(); break;
+    case "refazer-prova": iniciarProva(); break;
+    case "rever-modulos": tela("trilha"); renderTrilha(); break;
+  }
+});
+
+initFirebase();
+</script>
+</body>
+</html>
