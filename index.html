@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formação | Portal do Educador</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  html,body{background:transparent !important; height:auto !important;}
+  #pde-painel{
+    --verde:#1a6b2a;
+    --verde-cl:#22963a;
+    --azul:#0f2c4a;
+    --azul-2:#163d63;
+    --ciano:#37B1DA;
+    --tinta:#0c1825;
+    --papel:#f7f9fb;
+    --papel-2:#eef2f7;
+    --linha:#e2e8f0;
+    --tx:#1f2b3a;
+    --tx-suave:#5b6b7d;
+    --branco:#ffffff;
+    --ok:#15803d;
+    --erro:#c0392b;
+    --sombra-sm:0 1px 2px rgba(15,44,74,.06), 0 2px 8px rgba(15,44,74,.05);
+    --sombra-md:0 4px 12px rgba(15,44,74,.08), 0 12px 32px rgba(15,44,74,.10);
+    --sombra-lg:0 18px 48px rgba(15,44,74,.16);
+    --r:16px;
+    font-family:'Inter',system-ui,sans-serif;
+    color:var(--tx);
+    max-width:1120px;
+    margin:0 auto;
+    padding:8px 14px 28px;
+    -webkit-font-smoothing:antialiased;
+  }
+  #pde-painel *{box-sizing:border-box;}
+  #pde-painel h1,#pde-painel h2,#pde-painel h3,#pde-painel h4{font-family:'Sora',sans-serif;margin:0;letter-spacing:-.01em;}
+
+  /* ===== CABEÇALHO ===== */
+  #pde-painel .pde-top{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;
+    padding:14px 4px 18px;flex-wrap:wrap;
+  }
+  #pde-painel .pde-brand{display:flex;align-items:center;gap:12px;}
+  #pde-painel .pde-brand-mk{
+    width:46px;height:46px;border-radius:50%;flex-shrink:0;overflow:hidden;
+    box-shadow:0 2px 8px rgba(15,44,74,.18);border:2px solid #fff;
+    background:#0c1825;
+  }
+  #pde-painel .pde-brand-mk img{width:100%;height:100%;object-fit:cover;display:block;}
+  #pde-painel .pde-brand-txt b{font-family:'Sora';font-weight:700;font-size:1.02rem;color:var(--tinta);display:block;line-height:1.1;}
+  #pde-painel .pde-brand-txt span{font-size:.72rem;color:var(--tx-suave);letter-spacing:.06em;text-transform:uppercase;}
+  #pde-painel .pde-top-link{font-size:.8rem;color:var(--tx-suave);font-weight:500;}
+
+  /* ===== HERO (vitrine) ===== */
+  #pde-painel .pde-hero{margin:6px 4px 22px;}
+  #pde-painel .pde-hero .eyebrow{
+    font-size:.74rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--verde);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+  }
+  #pde-painel .pde-hero .eyebrow::before{content:"";width:22px;height:2px;background:var(--verde);border-radius:2px;}
+  #pde-painel .pde-hero h2{font-size:2.05rem;font-weight:800;color:var(--tinta);line-height:1.08;max-width:18ch;}
+  #pde-painel .pde-hero p{font-size:.96rem;color:var(--tx-suave);margin-top:10px;max-width:54ch;line-height:1.55;}
+
+  /* ===== GRID DE CURSOS (pôsteres) ===== */
+  #pde-painel .pde-shelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;}
+  #pde-painel .pde-poster{
+    position:relative;border-radius:var(--r);overflow:hidden;background:var(--branco);
+    border:1px solid var(--linha);box-shadow:var(--sombra-sm);cursor:pointer;
+    transition:transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s;
+    display:flex;flex-direction:column;
+  }
+  #pde-painel .pde-poster:hover{transform:translateY(-6px);box-shadow:var(--sombra-lg);}
+  #pde-painel .pde-poster:focus-within{outline:2px solid var(--ciano);outline-offset:2px;}
+  #pde-painel .pde-poster-capa{
+    height:150px;position:relative;overflow:hidden;
+    background:
+      radial-gradient(120% 140% at 0% 0%, rgba(55,177,218,.30), transparent 60%),
+      linear-gradient(135deg,var(--azul) 0%,var(--tinta) 100%);
+  }
+  #pde-painel .pde-poster-capa.has-img{background-size:cover;background-position:center;}
+  #pde-painel .pde-poster-capa::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 40%,rgba(12,24,37,.55));
+  }
+  #pde-painel .pde-poster-capa .pde-glyph{
+    position:absolute;right:-14px;bottom:-18px;font-family:'Sora';font-weight:800;
+    font-size:5.2rem;color:rgba(255,255,255,.10);line-height:1;z-index:1;letter-spacing:-.04em;
+  }
+  #pde-painel .pde-poster-tagrow{position:absolute;top:12px;left:12px;z-index:2;display:flex;gap:6px;}
+  #pde-painel .pde-chip{
+    font-size:.66rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.16);color:#fff;
+    backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.22);
+  }
+  #pde-painel .pde-poster-body{padding:15px 16px 17px;display:flex;flex-direction:column;gap:7px;flex:1;}
+  #pde-painel .pde-poster-body h4{font-size:1.05rem;font-weight:700;color:var(--tinta);line-height:1.2;}
+  #pde-painel .pde-poster-body p{font-size:.83rem;color:var(--tx-suave);line-height:1.5;flex:1;margin:0;}
+  #pde-painel .pde-poster-meta{
+    display:flex;align-items:center;gap:14px;font-size:.76rem;color:var(--tx-suave);
+    padding-top:9px;border-top:1px solid var(--linha);margin-top:3px;
+  }
+  #pde-painel .pde-poster-meta b{color:var(--tx);font-weight:600;}
+  #pde-painel .pde-poster-cta{
+    margin-top:11px;display:flex;align-items:center;justify-content:center;gap:8px;
+    padding:11px;border-radius:11px;background:var(--verde);color:#fff;font-weight:600;font-size:.88rem;
+    transition:background .2s;
+  }
+  #pde-painel .pde-poster:hover .pde-poster-cta{background:var(--verde-cl);}
+
+  /* ===== BOTÕES ===== */
+  #pde-painel .pde-btn{
+    padding:11px 22px;border-radius:12px;border:none;cursor:pointer;font-family:'Inter';
+    font-weight:600;font-size:.9rem;color:#fff;background:var(--verde);transition:background .2s,transform .1s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  #pde-painel .pde-btn:hover{background:var(--verde-cl);}
+  #pde-painel .pde-btn:active{transform:translateY(1px);}
+  #pde-painel .pde-btn:disabled{background:#aab6c4;cursor:not-allowed;}
+  #pde-painel .pde-btn-azul{background:var(--azul);}
+  #pde-painel .pde-btn-azul:hover{background:var(--azul-2);}
+  #pde-painel .pde-btn-ghost{background:transparent;color:var(--azul);border:1px solid var(--linha);}
+  #pde-painel .pde-btn-ghost:hover{background:var(--papel-2);}
+
+  /* ===== CARD GENÉRICO ===== */
+  #pde-painel .pde-card{background:var(--branco);border:1px solid var(--linha);border-radius:var(--r);padding:22px;box-shadow:var(--sombra-sm);}
+  #pde-painel .pde-card + .pde-card{margin-top:16px;}
+
+  /* ===== IDENTIFICAÇÃO ===== */
+  #pde-painel .pde-ident-wrap{max-width:560px;margin:10px auto;}
+  #pde-painel .pde-ident-head{text-align:center;margin-bottom:20px;}
+  #pde-painel .pde-ident-head .eyebrow{font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--verde);}
+  #pde-painel .pde-ident-head h3{font-size:1.45rem;font-weight:700;color:var(--tinta);margin-top:8px;}
+  #pde-painel .pde-ident-head p{font-size:.88rem;color:var(--tx-suave);margin-top:6px;}
+  #pde-painel label{display:block;font-size:.78rem;font-weight:600;margin-bottom:6px;color:var(--tx);}
+  #pde-painel input{
+    width:100%;padding:12px 14px;border:1px solid var(--linha);border-radius:11px;
+    font-size:.92rem;font-family:'Inter';margin-bottom:14px;background:var(--papel);transition:border .15s,box-shadow .15s,background .15s;
+  }
+  #pde-painel input:focus{outline:none;border-color:var(--ciano);background:#fff;box-shadow:0 0 0 3px rgba(55,177,218,.16);}
+  #pde-painel .pde-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:600px){#pde-painel .pde-grid2{grid-template-columns:1fr;}}
+  #pde-painel .pde-hint{font-size:.78rem;color:var(--tx-suave);margin-top:2px;}
+
+  /* ===== LAYOUT DA TRILHA (player + lista lateral) ===== */
+  #pde-painel .pde-course-bar{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:6px 4px 18px;
+  }
+  #pde-painel .pde-course-bar h3{font-size:1.4rem;font-weight:700;color:var(--tinta);}
+  #pde-painel .pde-course-bar .sub{font-size:.82rem;color:var(--tx-suave);margin-top:3px;}
+  #pde-painel .pde-progress-pill{
+    display:inline-flex;align-items:center;gap:10px;background:var(--branco);
+    border:1px solid var(--linha);border-radius:999px;padding:8px 14px;box-shadow:var(--sombra-sm);
+  }
+  #pde-painel .pde-progress-pill .ring{position:relative;width:34px;height:34px;}
+  #pde-painel .pde-progress-pill .ring svg{transform:rotate(-90deg);}
+  #pde-painel .pde-progress-pill .ring span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.64rem;font-weight:700;color:var(--azul);}
+  #pde-painel .pde-progress-pill .lbl{font-size:.8rem;color:var(--tx);font-weight:500;}
+
+  #pde-painel .pde-stage{display:grid;grid-template-columns:1fr 320px;gap:18px;align-items:start;}
+  @media(max-width:880px){#pde-painel .pde-stage{grid-template-columns:1fr;}}
+
+  /* player */
+  #pde-painel .pde-player-card{background:var(--tinta);border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra-md);}
+  #pde-painel .pde-video-wrap{position:relative;width:100%;padding-bottom:56.25%;background:#000;}
+  #pde-painel #pdePlayer{position:absolute;inset:0;width:100%;height:100%;}
+  #pde-painel .pde-player-foot{padding:14px 18px 16px;color:#dce4ee;}
+  #pde-painel .pde-player-foot .now{font-family:'Sora';font-weight:600;font-size:.96rem;color:#fff;margin-bottom:3px;}
+  #pde-painel .pde-player-foot .now small{display:block;font-family:'Inter';font-weight:400;font-size:.78rem;color:#9fb0c4;margin-top:2px;}
+  #pde-painel .pde-prog-bar{height:6px;width:100%;background:rgba(255,255,255,.14);border-radius:999px;overflow:hidden;margin-top:12px;}
+  #pde-painel .pde-prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--verde-cl),var(--ciano));transition:width .3s;border-radius:999px;}
+  #pde-painel .pde-prog-meta{display:flex;justify-content:space-between;align-items:center;margin-top:9px;font-size:.78rem;color:#9fb0c4;}
+  #pde-painel .pde-mod-action .pde-btn{background:#fff;color:var(--azul);}
+  #pde-painel .pde-mod-action .pde-btn:hover{background:#eaf0f6;}
+
+  /* lista lateral de aulas */
+  #pde-painel .pde-aulas{background:var(--branco);border:1px solid var(--linha);border-radius:var(--r);overflow:hidden;box-shadow:var(--sombra-sm);}
+  #pde-painel .pde-aulas-head{padding:14px 16px;border-bottom:1px solid var(--linha);display:flex;align-items:center;justify-content:space-between;}
+  #pde-painel .pde-aulas-head b{font-family:'Sora';font-size:.9rem;color:var(--tinta);}
+  #pde-painel .pde-aulas-head span{font-size:.74rem;color:var(--tx-suave);}
+  #pde-painel .pde-aulas-list{max-height:430px;overflow-y:auto;}
+  #pde-painel .pde-aula{
+    display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--papel-2);
+    cursor:pointer;transition:background .15s;
+  }
+  #pde-painel .pde-aula:last-child{border-bottom:none;}
+  #pde-painel .pde-aula:hover{background:var(--papel);}
+  #pde-painel .pde-aula.atual{background:linear-gradient(90deg,rgba(26,107,42,.08),transparent);box-shadow:inset 3px 0 0 var(--verde);}
+  #pde-painel .pde-aula.bloq{opacity:.5;cursor:not-allowed;}
+  #pde-painel .pde-aula-num{
+    width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-family:'Sora';font-weight:700;font-size:.82rem;background:var(--papel-2);color:var(--tx-suave);
+  }
+  #pde-painel .pde-aula-num.ok{background:var(--verde);color:#fff;}
+  #pde-painel .pde-aula-num.atual{background:var(--azul);color:#fff;}
+  #pde-painel .pde-aula-num svg{width:15px;height:15px;}
+  #pde-painel .pde-aula-txt{flex:1;min-width:0;}
+  #pde-painel .pde-aula-txt strong{display:block;font-size:.84rem;font-weight:600;color:var(--tx);line-height:1.25;}
+  #pde-painel .pde-aula-txt span{font-size:.74rem;color:var(--tx-suave);}
+
+  /* avaliação cta */
+  #pde-painel .pde-eval{
+    margin-top:18px;border-radius:var(--r);padding:24px;text-align:center;
+    background:linear-gradient(135deg,var(--azul) 0%,var(--tinta) 100%);color:#fff;box-shadow:var(--sombra-md);
+    position:relative;overflow:hidden;
+  }
+  #pde-painel .pde-eval::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 100% 0%,rgba(55,177,218,.28),transparent 55%);}
+  #pde-painel .pde-eval-in{position:relative;z-index:1;}
+  #pde-painel .pde-eval h3{font-size:1.25rem;font-weight:700;}
+  #pde-painel .pde-eval p{font-size:.88rem;color:#c3d2e2;margin:8px 0 16px;}
+  #pde-painel .pde-eval .pde-btn-azul{background:#fff;color:var(--azul);}
+  #pde-painel .pde-eval .pde-btn-azul:hover{background:#eaf0f6;}
+  #pde-painel .pde-eval .pde-btn:disabled{background:rgba(255,255,255,.2);color:rgba(255,255,255,.6);}
+
+  /* ===== QUIZ ===== */
+  #pde-painel .pde-quiz-wrap{max-width:680px;margin:0 auto;}
+  #pde-painel .pde-q-counter{font-size:.78rem;font-weight:600;color:var(--verde);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px;}
+  #pde-painel .pde-q{font-family:'Sora';font-size:1.12rem;font-weight:600;color:var(--tinta);margin:14px 0 16px;line-height:1.35;}
+  #pde-painel .pde-opt{
+    width:100%;text-align:left;padding:14px 16px;margin-bottom:10px;
+    border:1px solid var(--linha);background:var(--branco);border-radius:12px;cursor:pointer;font-size:.92rem;
+    font-family:'Inter';color:var(--tx);transition:border .15s,background .15s,box-shadow .15s;display:flex;align-items:center;gap:12px;
+  }
+  #pde-painel .pde-opt::before{
+    content:attr(data-letra);flex-shrink:0;width:26px;height:26px;border-radius:7px;
+    background:var(--papel-2);color:var(--tx-suave);font-weight:700;font-size:.8rem;
+    display:flex;align-items:center;justify-content:center;transition:background .15s,color .15s;font-family:'Sora';
+  }
+  #pde-painel .pde-opt:hover{border-color:var(--ciano);background:var(--papel);}
+  #pde-painel .pde-opt.sel{border-color:var(--azul);background:rgba(22,61,99,.05);box-shadow:0 0 0 3px rgba(22,61,99,.10);}
+  #pde-painel .pde-opt.sel::before{background:var(--azul);color:#fff;}
+
+  /* ===== RESULTADO ===== */
+  #pde-painel .pde-result-wrap{max-width:560px;margin:0 auto;text-align:center;}
+  #pde-painel .pde-result-ring{width:128px;height:128px;margin:6px auto 14px;position:relative;}
+  #pde-painel .pde-result-ring span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Sora';font-size:2rem;font-weight:800;}
+  #pde-painel .pde-result-ok span{color:var(--ok);}
+  #pde-painel .pde-result-no span{color:var(--erro);}
+  #pde-painel .pde-result-title{font-family:'Sora';font-size:1.3rem;font-weight:700;color:var(--tinta);}
+  #pde-painel .pde-result-msg{font-size:.9rem;color:var(--tx-suave);margin:10px 0 18px;line-height:1.5;}
+
+  /* ===== misc ===== */
+  #pde-painel .pde-empty{font-size:.9rem;color:var(--tx-suave);padding:40px 12px;text-align:center;}
+  #pde-painel .pde-skel{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;}
+  #pde-painel .pde-skel-card{height:300px;border-radius:var(--r);background:linear-gradient(100deg,var(--papel-2) 30%,#f3f6f9 50%,var(--papel-2) 70%);background-size:200% 100%;animation:pdeShimmer 1.3s infinite;}
+  @keyframes pdeShimmer{to{background-position:-200% 0;}}
+  #pde-painel .pde-mt{margin-top:16px;}
+  #pde-painel .pde-center{text-align:center;}
+
+  #pde-toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(8px);
+    background:var(--tinta);color:#fff;padding:13px 22px;border-radius:12px;font-size:.86rem;font-family:'Inter';
+    box-shadow:var(--sombra-lg);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:9999;
+  }
+  #pde-toast.cc-show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){
+    #pde-painel *{transition:none !important;animation:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id="pde-painel">
+
+  <!-- CABEÇALHO -->
+  <div class="pde-top">
+    <div class="pde-brand">
+      <div class="pde-brand-mk"><img src="data:image/jpeg;base64,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" alt="Portal do Educador"></div>
+      <div class="pde-brand-txt">
+        <b>Portal do Educador</b>
+        <span>Formação Continuada</span>
+      </div>
+    </div>
+    <div class="pde-top-link">NEWPC Connect &middot; Camada Pedagógica</div>
+  </div>
+
+  <!-- ===== TELA 1: VITRINE ===== -->
+  <div id="pde-tela-cursos">
+    <div class="pde-hero">
+      <div class="eyebrow">Trilhas de formação</div>
+      <h2>Aprenda no seu ritmo, certifique no seu tempo.</h2>
+      <p>Trilhas práticas para qualificar o uso pedagógico da tecnologia em sala de aula. Conclua os módulos, faça a avaliação e emita seu certificado.</p>
+    </div>
+    <div id="pde-cursos-grid" class="pde-shelf">
+      <div class="pde-skel"><div class="pde-skel-card"></div><div class="pde-skel-card"></div><div class="pde-skel-card"></div></div>
+    </div>
+  </div>
+
+  <!-- ===== TELA 2: IDENTIFICAÇÃO ===== -->
+  <div id="pde-tela-ident" style="display:none;">
+    <div class="pde-ident-wrap">
+      <div class="pde-ident-head">
+        <div class="eyebrow">Antes de começar</div>
+        <h3 id="pde-ident-curso">Identificação do cursista</h3>
+        <p>Seus dados acompanham o progresso e validam o certificado.</p>
+      </div>
+      <div class="pde-card">
+        <div class="pde-grid2">
+          <div><label>Nome completo</label><input type="text" id="id-nome" placeholder="Seu nome"></div>
+          <div><label>E-mail</label><input type="email" id="id-email" placeholder="seu@email.com"></div>
+        </div>
+        <div class="pde-grid2">
+          <div><label>Escola / Rede</label><input type="text" id="id-escola" placeholder="Ex.: Escola Municipal Tiradentes"></div>
+          <div><label>Município / Estado</label><input type="text" id="id-cidade" placeholder="Ex.: Campo Grande/MS"></div>
+        </div>
+        <div class="pde-hint">Use sempre o mesmo e-mail para retomar o curso em qualquer dispositivo.</div>
+        <div class="pde-mt" style="display:flex;gap:10px;">
+          <button class="pde-btn" data-action="iniciar-curso">Iniciar curso</button>
+          <button class="pde-btn pde-btn-ghost" data-action="voltar-cursos">Voltar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TELA 3: TRILHA (player + lista) ===== -->
+  <div id="pde-tela-trilha" style="display:none;">
+    <div class="pde-course-bar">
+      <div>
+        <h3 id="pde-trilha-titulo">Curso</h3>
+        <div class="sub" id="pde-trilha-sub"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="pde-progress-pill">
+          <div class="ring">
+            <svg width="34" height="34" viewBox="0 0 34 34">
+              <circle cx="17" cy="17" r="14" fill="none" stroke="#e2e8f0" stroke-width="4"/>
+              <circle id="pde-ring-fg" cx="17" cy="17" r="14" fill="none" stroke="#1a6b2a" stroke-width="4" stroke-linecap="round" stroke-dasharray="88" stroke-dashoffset="88"/>
+            </svg>
+            <span id="pde-ring-pct">0%</span>
+          </div>
+          <span class="lbl" id="pde-prog-lbl">0 de 0 módulos</span>
+        </div>
+        <button class="pde-btn pde-btn-ghost" data-action="voltar-cursos">Trocar curso</button>
+      </div>
+    </div>
+
+    <div class="pde-stage">
+      <!-- player -->
+      <div class="pde-player-card">
+        <div class="pde-video-wrap"><div id="pdePlayer"></div></div>
+        <div class="pde-player-foot">
+          <div class="now" id="pde-now">Selecione um módulo<small id="pde-now-sub"></small></div>
+          <div class="pde-prog-bar"><div class="pde-prog-fill" id="pde-video-fill"></div></div>
+          <div class="pde-prog-meta">
+            <span id="pde-video-label">0% assistido</span>
+            <span class="pde-mod-action" id="pde-mod-action"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- lista de aulas -->
+      <div class="pde-aulas">
+        <div class="pde-aulas-head"><b>Conteúdo do curso</b><span id="pde-aulas-count"></span></div>
+        <div class="pde-aulas-list" id="pde-trail-list"></div>
+      </div>
+    </div>
+
+    <!-- avaliação -->
+    <div class="pde-eval" id="pde-eval-cta">
+      <div class="pde-eval-in">
+        <h3>Avaliação final</h3>
+        <p id="pde-eval-status">Conclua todos os módulos para liberar a avaliação.</p>
+        <button class="pde-btn pde-btn-azul" id="pde-btn-eval" data-action="iniciar-prova" disabled>Iniciar avaliação</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TELA 4: QUIZ ===== -->
+  <div id="pde-tela-quiz" style="display:none;">
+    <div class="pde-quiz-wrap">
+      <div class="pde-card">
+        <div class="pde-q-counter" id="pde-q-counter"></div>
+        <div class="pde-prog-bar" style="background:var(--papel-2);"><div class="pde-prog-fill" id="pde-quiz-fill" style="background:linear-gradient(90deg,var(--verde-cl),var(--ciano));"></div></div>
+        <div id="pde-quiz-area"></div>
+        <div class="pde-mt" id="pde-quiz-nav" style="display:flex;gap:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TELA 5: RESULTADO ===== -->
+  <div id="pde-tela-result" style="display:none;">
+    <div class="pde-result-wrap">
+      <div class="pde-card">
+        <div class="pde-result-ring" id="pde-result-ring">
+          <svg width="128" height="128" viewBox="0 0 128 128">
+            <circle cx="64" cy="64" r="56" fill="none" stroke="#eef2f7" stroke-width="9"/>
+            <circle id="pde-result-arc" cx="64" cy="64" r="56" fill="none" stroke="#15803d" stroke-width="9" stroke-linecap="round" stroke-dasharray="352" stroke-dashoffset="352" transform="rotate(-90 64 64)"/>
+          </svg>
+          <span id="pde-result-pct">0%</span>
+        </div>
+        <div class="pde-result-title" id="pde-result-title">Resultado</div>
+        <div class="pde-result-msg" id="pde-result-msg"></div>
+        <div id="pde-result-actions" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<div id="pde-toast"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script>
+/* =====================================================================
+   FORMAÇÃO - PLAYER v2 (visual premium claro)
+   NEWPC / Portal do Educador
+   Lógica preservada da v1 (testada em produção). Render reescrito.
+   ===================================================================== */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBCBrRIM75XZaRxTd6DNrB-sPUjVBlDfVQ",
+  authDomain: "portal-cursos-7301c.firebaseapp.com",
+  projectId: "portal-cursos-7301c",
+  storageBucket: "portal-cursos-7301c.firebasestorage.app",
+  messagingSenderId: "444401311492",
+  appId: "1:444401311492:web:88806e9c46235751e17a51"
+};
+const LIMIAR_VIDEO = 90;
+const MAX_QUESTOES = 20;
+
+let db=null, fbOk=false;
+let cursos=[], cursoAtivo=null, modulos=[], questoes=[];
+let matricula=null, matriculaId=null;
+let player=null, duration=0, moduloAtualIdx=0, videoPct=0;
+let quizQuestoes=[], qi=0, respostas=[];
+
+const SVG_CHECK='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const SVG_LOCK='<svg viewBox="0 0 24 24" fill="none"><rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M8 11V8a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.8"/></svg>';
+
+function initFirebase(){
+  try{
+    if(firebaseConfig.apiKey.indexOf("COLE_AQUI")===0){
+      document.getElementById("pde-cursos-grid").innerHTML='<div class="pde-empty">Configuração do Firebase pendente.</div>'; return;
+    }
+    firebase.initializeApp(firebaseConfig);
+    db=firebase.firestore(); fbOk=true; carregarCursos();
+  }catch(e){ console.error(e); }
+}
+
+function toast(m){ const t=document.getElementById("pde-toast"); t.textContent=m; t.className="cc-show"; setTimeout(()=>t.className="",2400); }
+function val(id){ return (document.getElementById(id).value||"").trim(); }
+function normEmail(e){ return (e||"").trim().toLowerCase(); }
+function escapeHtml(s){ if(s==null)return""; return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function agora(){ return firebase.firestore.FieldValue.serverTimestamp(); }
+function tela(nome){
+  ["cursos","ident","trilha","quiz","result"].forEach(t=>{
+    document.getElementById("pde-tela-"+t).style.display=(t===nome?"block":"none");
+  });
+  reportarAltura();
+}
+
+/* ---------- CURSOS ---------- */
+function carregarCursos(){
+  db.collection("cursos").where("ativo","==",true).where("status","==","publicado").get().then(snap=>{
+    cursos=[]; snap.forEach(d=> cursos.push(Object.assign({id:d.id},d.data())));
+    cursos.sort((a,b)=>(a.titulo||"").localeCompare(b.titulo||""));
+    renderCursos();
+  }).catch(e=>{ console.error(e); document.getElementById("pde-cursos-grid").innerHTML='<div class="pde-empty">Não foi possível carregar os cursos agora.</div>'; });
+}
+
+function renderCursos(){
+  const g=document.getElementById("pde-cursos-grid");
+  if(!cursos.length){ g.innerHTML='<div class="pde-empty">Nenhum curso publicado no momento. Volte em breve.</div>'; reportarAltura(); return; }
+  g.innerHTML=cursos.map(c=>{
+    const temImg=!!c.capa_url;
+    const capaCls="pde-poster-capa"+(temImg?" has-img":"");
+    const capaStyle=temImg?`style="background-image:url('${escapeHtml(c.capa_url)}')"`:"";
+    const inicial=escapeHtml((c.titulo||"?").trim().charAt(0).toUpperCase());
+    return `
+      <div class="pde-poster" tabindex="0" data-action="abrir-curso" data-id="${c.id}">
+        <div class="${capaCls}" ${capaStyle}>
+          <div class="pde-poster-tagrow"><span class="pde-chip">${escapeHtml(c.municipio_id||'GERAL')}</span></div>
+          ${temImg?"":`<div class="pde-glyph">${inicial}</div>`}
+        </div>
+        <div class="pde-poster-body">
+          <h4>${escapeHtml(c.titulo)}</h4>
+          <p>${escapeHtml(c.descricao||"")}</p>
+          <div class="pde-poster-meta"><span><b>${c.carga_horaria||0}h</b> de formação</span><span>Nota mín. <b>${c.nota_minima||70}%</b></span></div>
+          <div class="pde-poster-cta">Acessar curso &rarr;</div>
+        </div>
+      </div>`;
+  }).join("");
+  reportarAltura();
+}
+
+function abrirCurso(id){
+  cursoAtivo=cursos.find(c=>c.id===id); if(!cursoAtivo) return;
+  document.getElementById("pde-ident-curso").textContent=cursoAtivo.titulo;
+  const cache=lerCacheIdent();
+  if(cache){ document.getElementById("id-nome").value=cache.nome||""; document.getElementById("id-email").value=cache.email||""; document.getElementById("id-escola").value=cache.escola||""; document.getElementById("id-cidade").value=cache.cidade||""; }
+  tela("ident");
+}
+
+/* ---------- IDENTIFICAÇÃO ---------- */
+function lerCacheIdent(){ try{ return JSON.parse(localStorage.getItem("pde_ident")||"null"); }catch(e){ return null; } }
+function salvarCacheIdent(o){ try{ localStorage.setItem("pde_ident",JSON.stringify(o)); }catch(e){} }
+
+function iniciarCurso(){
+  const nome=val("id-nome"), email=normEmail(val("id-email")), escola=val("id-escola"), cidade=val("id-cidade");
+  if(!nome||!email||!escola||!cidade) return toast("Preencha todos os campos.");
+  if(email.indexOf("@")<0||email.indexOf(".")<0) return toast("Informe um e-mail válido.");
+  salvarCacheIdent({nome,email,escola,cidade});
+  matriculaId=cursoAtivo.id+"__"+email.replace(/[^a-z0-9]/g,"_");
+  const ref=db.collection("matriculas").doc(matriculaId);
+  ref.get().then(doc=>{
+    if(doc.exists){ matricula=doc.data(); }
+    else{
+      matricula={ curso_id:cursoAtivo.id, municipio_id:cursoAtivo.municipio_id||"GERAL",
+        cursista_nome:nome, cursista_email:email, cursista_escola:escola, cursista_cidade:cidade,
+        modulos_vistos:[], nota:0, percentual:0, concluido:false, iniciado_em:agora(), atualizado_em:agora() };
+      return ref.set(matricula);
+    }
+  }).then(()=> carregarConteudoCurso()).catch(e=>{ console.error(e); toast("Erro ao iniciar o curso."); });
+}
+
+/* ---------- CONTEÚDO ---------- */
+function carregarConteudoCurso(){
+  Promise.all([
+    db.collection("modulos").where("curso_id","==",cursoAtivo.id).where("ativo","==",true).get(),
+    db.collection("questoes").where("curso_id","==",cursoAtivo.id).where("ativo","==",true).get()
+  ]).then(([ms,qs])=>{
+    modulos=[]; ms.forEach(d=> modulos.push(Object.assign({id:d.id},d.data()))); modulos.sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+    questoes=[]; qs.forEach(d=> questoes.push(Object.assign({id:d.id},d.data())));
+    if(!modulos.length){ toast("Curso sem módulos ainda."); tela("cursos"); return; }
+    document.getElementById("pde-trilha-titulo").textContent=cursoAtivo.titulo;
+    document.getElementById("pde-trilha-sub").textContent=(cursoAtivo.carga_horaria||0)+"h · "+modulos.length+" módulos · nota mín. "+(cursoAtivo.nota_minima||70)+"%";
+    moduloAtualIdx=primeiroNaoConcluido();
+    tela("trilha"); renderTrilha(); setModulo(moduloAtualIdx,false); atualizarEstadoProva();
+  }).catch(e=>{ console.error(e); toast("Erro ao carregar o conteúdo."); });
+}
+
+function modVisto(id){ return (matricula.modulos_vistos||[]).indexOf(id)>=0; }
+function primeiroNaoConcluido(){ for(let i=0;i<modulos.length;i++){ if(!modVisto(modulos[i].id)) return i; } return modulos.length-1; }
+function moduloLiberado(idx){ if(idx===0) return true; for(let i=0;i<idx;i++){ if(!modVisto(modulos[i].id)) return false; } return true; }
+
+function renderTrilha(){
+  const vistos=(matricula.modulos_vistos||[]).length;
+  const total=modulos.length;
+  document.getElementById("pde-prog-lbl").textContent=vistos+" de "+total+" módulos";
+  document.getElementById("pde-aulas-count").textContent=total+" aulas";
+  // anel de progresso
+  const pct=total?Math.round((vistos/total)*100):0;
+  const circ=2*Math.PI*14;
+  const arc=document.getElementById("pde-ring-fg");
+  arc.setAttribute("stroke-dasharray",circ.toFixed(1));
+  arc.setAttribute("stroke-dashoffset",(circ*(1-pct/100)).toFixed(1));
+  document.getElementById("pde-ring-pct").textContent=pct+"%";
+
+  const list=document.getElementById("pde-trail-list");
+  list.innerHTML=modulos.map((m,i)=>{
+    const visto=modVisto(m.id), atual=(i===moduloAtualIdx), liberado=moduloLiberado(i);
+    let numHtml, numCls="";
+    if(visto){ numHtml=SVG_CHECK; numCls="ok"; }
+    else if(atual){ numHtml=(i+1); numCls="atual"; }
+    else{ numHtml=liberado?(i+1):SVG_LOCK; }
+    const clickable=(liberado||visto);
+    let cls="pde-aula"; if(atual)cls+=" atual"; if(!liberado&&!visto)cls+=" bloq";
+    return `<div class="${cls}" ${clickable?`data-action="ir-modulo" data-idx="${i}"`:""}>
+      <div class="pde-aula-num ${numCls}">${numHtml}</div>
+      <div class="pde-aula-txt"><strong>${escapeHtml(m.titulo)}</strong><span>${escapeHtml(m.subtitulo||("Aula "+(i+1)))}</span></div>
+    </div>`;
+  }).join("");
+  reportarAltura();
+}
+
+/* ---------- PLAYER ---------- */
+function onYouTubeIframeAPIReady(){ }
+
+function setModulo(idx, autoplay){
+  if(!moduloLiberado(idx)&&!modVisto(modulos[idx].id)){ toast("Conclua o módulo anterior primeiro."); return; }
+  moduloAtualIdx=idx; const m=modulos[idx];
+  document.getElementById("pde-now").innerHTML="Módulo "+(idx+1)+" · "+escapeHtml(m.titulo)+"<small>"+escapeHtml(m.subtitulo||"")+"</small>";
+  videoPct=modVisto(m.id)?100:0; pintarVideoProg(videoPct);
+  renderTrilha(); renderAcaoModulo();
+  if(!player){
+    player=new YT.Player("pdePlayer",{ videoId:m.youtube_id, playerVars:{rel:0,modestbranding:1},
+      events:{ onReady:e=>{ duration=e.target.getDuration(); if(!window._pdeTick){window._pdeTick=setInterval(tickVideo,1000);} if(autoplay)e.target.playVideo(); }, onStateChange:onState } });
+  }else{ duration=0; player.loadVideoById(m.youtube_id); }
+}
+function onState(e){ if(e.data===YT.PlayerState.ENDED){ marcarVideoPct(100); } }
+function tickVideo(){
+  if(!player||typeof player.getCurrentTime!=="function") return;
+  if(!duration||duration===0){ const d=player.getDuration(); if(d>0)duration=d; else return; }
+  const cur=player.getCurrentTime()||0; let pct=Math.round((cur/duration)*100); if(pct>100)pct=100;
+  marcarVideoPct(pct);
+}
+function marcarVideoPct(pct){
+  const m=modulos[moduloAtualIdx];
+  if(modVisto(m.id)){ videoPct=100; pintarVideoProg(100); return; }
+  videoPct=pct; pintarVideoProg(pct);
+  if(pct>=LIMIAR_VIDEO){ concluirModulo(m); }
+}
+function pintarVideoProg(pct){ document.getElementById("pde-video-fill").style.width=pct+"%"; document.getElementById("pde-video-label").textContent=pct+"% assistido"; }
+function concluirModulo(m){
+  if(modVisto(m.id)) return;
+  matricula.modulos_vistos=(matricula.modulos_vistos||[]).concat([m.id]);
+  db.collection("matriculas").doc(matriculaId).update({ modulos_vistos:matricula.modulos_vistos, atualizado_em:agora() })
+    .then(()=>{ toast("Módulo concluído"); renderTrilha(); renderAcaoModulo(); atualizarEstadoProva(); }).catch(e=>console.error(e));
+}
+function renderAcaoModulo(){
+  const box=document.getElementById("pde-mod-action");
+  const temProx=moduloAtualIdx<modulos.length-1;
+  const vistoAtual=modVisto(modulos[moduloAtualIdx].id);
+  if(vistoAtual&&temProx){ box.innerHTML='<button class="pde-btn" data-action="proximo-modulo">Próximo módulo &rarr;</button>'; }
+  else if(vistoAtual&&!temProx){ box.innerHTML=''; }
+  else{ box.innerHTML=''; }
+}
+
+/* ---------- PROVA ---------- */
+function todosConcluidos(){ return modulos.length>0 && modulos.every(m=> modVisto(m.id)); }
+function atualizarEstadoProva(){
+  const btn=document.getElementById("pde-btn-eval"); const st=document.getElementById("pde-eval-status");
+  if(!questoes.length){ st.textContent="Este curso ainda não tem avaliação cadastrada."; btn.disabled=true; reportarAltura(); return; }
+  if(todosConcluidos()){ st.textContent="Você concluiu todos os módulos. A avaliação está liberada."; btn.disabled=false; }
+  else{ st.textContent="Conclua todos os módulos para liberar a avaliação."; btn.disabled=true; }
+  reportarAltura();
+}
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function iniciarProva(){
+  if(!todosConcluidos()) return toast("Conclua todos os módulos.");
+  const n=Math.min(MAX_QUESTOES,questoes.length);
+  quizQuestoes=shuffle(questoes).slice(0,n).map(q=>({ enunciado:q.enunciado, alternativas:q.alternativas, correta:q.correta, ordem:shuffle([0,1,2,3]) }));
+  qi=0; respostas=new Array(quizQuestoes.length).fill(null); tela("quiz"); renderQuestao();
+}
+function renderQuestao(){
+  const q=quizQuestoes[qi];
+  document.getElementById("pde-q-counter").textContent="Questão "+(qi+1)+" de "+quizQuestoes.length;
+  document.getElementById("pde-quiz-fill").style.width=Math.round((qi/quizQuestoes.length)*100)+"%";
+  const letras=["A","B","C","D"];
+  let html='<div class="pde-q">'+escapeHtml(q.enunciado)+'</div>';
+  q.ordem.forEach((origIdx,pos)=>{
+    const sel=(respostas[qi]===origIdx)?" sel":"";
+    html+='<button class="pde-opt'+sel+'" data-letra="'+letras[pos]+'" data-action="marcar-opt" data-orig="'+origIdx+'">'+escapeHtml(q.alternativas[origIdx])+'</button>';
+  });
+  document.getElementById("pde-quiz-area").innerHTML=html;
+  const ultima=(qi===quizQuestoes.length-1);
+  document.getElementById("pde-quiz-nav").innerHTML=
+    (qi>0?'<button class="pde-btn pde-btn-ghost" data-action="quiz-voltar">Voltar</button>':'')+
+    (ultima?'<button class="pde-btn pde-btn-azul" data-action="quiz-finalizar">Finalizar avaliação</button>':'<button class="pde-btn" data-action="quiz-proxima">Próxima</button>');
+  reportarAltura();
+}
+function marcarOpt(o){ respostas[qi]=o; renderQuestao(); }
+function quizProxima(){ if(respostas[qi]===null) return toast("Selecione uma resposta."); if(qi<quizQuestoes.length-1){qi++;renderQuestao();} }
+function quizVoltar(){ if(qi>0){qi--;renderQuestao();} }
+function quizFinalizar(){
+  if(respostas[qi]===null) return toast("Selecione uma resposta.");
+  let acertos=0; quizQuestoes.forEach((q,i)=>{ if(respostas[i]===q.correta) acertos++; });
+  const pct=Math.round((acertos/quizQuestoes.length)*100);
+  const aprovado=pct>=(cursoAtivo.nota_minima||70);
+  db.collection("matriculas").doc(matriculaId).update({ nota:pct, percentual:pct, concluido:aprovado, concluido_em:aprovado?agora():null, atualizado_em:agora() }).catch(e=>console.error(e));
+
+  document.getElementById("pde-result-pct").textContent=pct+"%";
+  const ring=document.getElementById("pde-result-ring");
+  ring.className="pde-result-ring "+(aprovado?"pde-result-ok":"pde-result-no");
+  const arc=document.getElementById("pde-result-arc");
+  arc.setAttribute("stroke",aprovado?"#15803d":"#c0392b");
+  const circ=2*Math.PI*56;
+  arc.setAttribute("stroke-dasharray",circ.toFixed(1));
+  arc.setAttribute("stroke-dashoffset",(circ*(1-pct/100)).toFixed(1));
+
+  document.getElementById("pde-result-title").textContent=aprovado?"Aprovado!":"Quase lá";
+  document.getElementById("pde-result-msg").textContent=aprovado
+    ? "Você acertou "+acertos+" de "+quizQuestoes.length+" questões e atingiu a nota mínima do curso."
+    : "Você acertou "+acertos+" de "+quizQuestoes.length+" ("+pct+"%). A nota mínima é "+(cursoAtivo.nota_minima||70)+"%. Revise os módulos e tente novamente.";
+  document.getElementById("pde-result-actions").innerHTML=aprovado
+    ? '<button class="pde-btn" data-action="emitir-cert">Emitir certificado</button><button class="pde-btn pde-btn-ghost" data-action="voltar-cursos">Voltar aos cursos</button>'
+    : '<button class="pde-btn" data-action="refazer-prova">Refazer avaliação</button><button class="pde-btn pde-btn-ghost" data-action="rever-modulos">Rever módulos</button>';
+  ultimaNota=pct;
+  tela("result");
+}
+
+/* ---------- CERTIFICADO ---------- */
+let ultimaNota=0;
+let certEmitindo=false;
+
+function dataBR(){ const d=new Date(); return String(d.getDate()).padStart(2,'0')+"/"+String(d.getMonth()+1).padStart(2,'0')+"/"+d.getFullYear(); }
+
+function emitirCert(){
+  if(certEmitindo) return;
+  if(!matricula||!matricula.concluido){ toast("Conclua a avaliação primeiro."); return; }
+  certEmitindo=true;
+  const btn=document.querySelector('[data-action="emitir-cert"]'); if(btn){ btn.disabled=true; btn.textContent="Gerando..."; }
+
+  const cert={
+    curso_id: cursoAtivo.id,
+    municipio_id: cursoAtivo.municipio_id||"GERAL",
+    matricula_id: matriculaId,
+    cursista_nome: matricula.cursista_nome,
+    cursista_email: matricula.cursista_email,
+    cursista_escola: matricula.cursista_escola||"",
+    cursista_cidade: matricula.cursista_cidade||"",
+    curso_titulo: cursoAtivo.titulo,
+    carga_horaria: cursoAtivo.carga_horaria||0,
+    nota: ultimaNota||matricula.nota||0,
+    emitido_em: agora()
+  };
+
+  db.collection("certificados").add(cert).then(ref=>{
+    const codigo="PE-"+ref.id.slice(-8).toUpperCase();
+    // grava o código legível de volta no doc (facilita futura verificação)
+    db.collection("certificados").doc(ref.id).update({ codigo: codigo }).catch(()=>{});
+    gerarPDF(cert, codigo);
+    if(btn){ btn.disabled=false; btn.textContent="Baixar novamente"; }
+    certEmitindo=false;
+    toast("Certificado emitido.");
+  }).catch(e=>{
+    console.error(e); certEmitindo=false;
+    if(btn){ btn.disabled=false; btn.textContent="Emitir certificado"; }
+    toast("Não foi possível emitir agora.",true);
+  });
+}
+
+function gerarPDF(cert, codigo){
+  if(!window.jspdf||!window.jspdf.jsPDF){ toast("Biblioteca de PDF não carregou. Tente novamente."); return; }
+  const { jsPDF }=window.jspdf;
+  const doc=new jsPDF({orientation:"landscape", unit:"mm", format:"a4"});
+  const W=297, H=210;
+
+  // fundo
+  doc.setFillColor(255,255,255); doc.rect(0,0,W,H,"F");
+  // faixa superior degradê (simulada com retângulos)
+  doc.setFillColor(15,44,74); doc.rect(0,0,W,6,"F");
+  doc.setFillColor(26,107,42); doc.rect(0,6,W,2,"F");
+  doc.setFillColor(55,177,218); doc.rect(0,8,W,1.2,"F");
+  // moldura
+  doc.setDrawColor(15,44,74); doc.setLineWidth(0.6); doc.rect(12,16,W-24,H-30);
+  doc.setDrawColor(55,177,218); doc.setLineWidth(0.2); doc.rect(14,18,W-28,H-34);
+
+  // título
+  doc.setTextColor(12,24,37);
+  doc.setFont("helvetica","bold"); doc.setFontSize(34);
+  doc.text("CERTIFICADO", W/2, 44, {align:"center"});
+  doc.setFont("helvetica","normal"); doc.setFontSize(12); doc.setTextColor(91,107,125);
+  doc.text("Formação Continuada · Portal do Educador", W/2, 53, {align:"center"});
+
+  // corpo
+  doc.setFontSize(13); doc.setTextColor(31,43,58);
+  doc.text("Certificamos que", W/2, 70, {align:"center"});
+  doc.setFont("helvetica","bold"); doc.setFontSize(22); doc.setTextColor(15,44,74);
+  doc.text(String(cert.cursista_nome||"").toUpperCase(), W/2, 82, {align:"center"});
+
+  doc.setFont("helvetica","normal"); doc.setFontSize(12); doc.setTextColor(31,43,58);
+  const corpo="concluiu a formação \""+cert.curso_titulo+"\", com carga horária de "+
+    cert.carga_horaria+" horas, atingindo a nota de "+cert.nota+"% na avaliação final, "+
+    "promovida pelo Portal do Educador com foco no uso pedagógico da tecnologia em sala de aula.";
+  const linhas=doc.splitTextToSize(corpo, W-90);
+  doc.text(linhas, W/2, 96, {align:"center"});
+
+  // dados do participante
+  let yd=96+linhas.length*6+6;
+  doc.setFontSize(10); doc.setTextColor(91,107,125);
+  const ident=[cert.cursista_escola, cert.cursista_cidade].filter(Boolean).join(" · ");
+  if(ident) doc.text(ident, W/2, yd, {align:"center"});
+
+  // assinatura NEWPC
+  const yAss=152;
+  doc.setDrawColor(120,130,140); doc.setLineWidth(0.3);
+  doc.line(W/2-40, yAss, W/2+40, yAss);
+  doc.setFont("helvetica","bold"); doc.setFontSize(11); doc.setTextColor(12,24,37);
+  doc.text("NEWPC Tecnologia", W/2, yAss+6, {align:"center"});
+  doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(91,107,125);
+  doc.text("CNPJ 20.892.343/0001-15", W/2, yAss+11, {align:"center"});
+
+  // ===== BLOCO DE VERIFICAÇÃO (destacado) =====
+  const yV=178;
+  // faixa sutil com borda arredondada simulada (retângulo claro)
+  doc.setFillColor(244,247,250);
+  doc.roundedRect(W/2-95, yV-7, 190, 17, 2.5, 2.5, "F");
+  doc.setDrawColor(55,177,218); doc.setLineWidth(0.3);
+  doc.roundedRect(W/2-95, yV-7, 190, 17, 2.5, 2.5, "S");
+  // texto do bloco
+  doc.setFont("helvetica","bold"); doc.setFontSize(9); doc.setTextColor(15,44,74);
+  doc.text("CÓDIGO DE VERIFICAÇÃO: "+codigo, W/2, yV-1, {align:"center"});
+  doc.setFont("helvetica","normal"); doc.setFontSize(8); doc.setTextColor(31,43,58);
+  doc.text("Confira a autenticidade em formacao.portaldoeducador.com.br/verificar.html", W/2, yV+5, {align:"center"});
+
+  // rodapé discreto: só a data
+  doc.setFontSize(8); doc.setTextColor(120,130,140);
+  doc.text("Emitido em "+dataBR(), W-20, H-16, {align:"right"});
+
+  const nomeArq="Certificado_"+String(cert.cursista_nome||"cursista").replace(/[^a-zA-Z0-9]/g,"_")+".pdf";
+  doc.save(nomeArq);
+}
+
+/* ---------- NAV ---------- */
+function voltarCursos(){ tela("cursos"); }
+
+/* ---------- AUTO-RESIZE ---------- */
+function reportarAltura(){
+  const painel=document.getElementById("pde-painel"); if(!painel) return;
+  const filhos=painel.children; let ultimo=null;
+  for(let i=filhos.length-1;i>=0;i--){ if(filhos[i].offsetParent!==null){ ultimo=filhos[i]; break; } }
+  const altura=ultimo?(ultimo.offsetTop+ultimo.offsetHeight+28):painel.offsetHeight;
+  try{ window.parent.postMessage({tipo:"pde-altura",altura:altura},"*"); }catch(e){}
+}
+window.addEventListener("load",reportarAltura);
+window.addEventListener("resize",reportarAltura);
+
+/* ---------- LISTENER ÚNICO ---------- */
+document.addEventListener("click",function(ev){
+  const el=ev.target.closest("[data-action]"); if(!el) return;
+  const a=el.getAttribute("data-action");
+  switch(a){
+    case "abrir-curso": abrirCurso(el.getAttribute("data-id")); break;
+    case "voltar-cursos": voltarCursos(); break;
+    case "iniciar-curso": iniciarCurso(); break;
+    case "ir-modulo": setModulo(parseInt(el.getAttribute("data-idx"),10),true); break;
+    case "proximo-modulo": if(moduloAtualIdx<modulos.length-1) setModulo(moduloAtualIdx+1,true); break;
+    case "iniciar-prova": iniciarProva(); break;
+    case "marcar-opt": marcarOpt(parseInt(el.getAttribute("data-orig"),10)); break;
+    case "quiz-proxima": quizProxima(); break;
+    case "quiz-voltar": quizVoltar(); break;
+    case "quiz-finalizar": quizFinalizar(); break;
+    case "refazer-prova": iniciarProva(); break;
+    case "emitir-cert": emitirCert(); break;
+    case "rever-modulos": tela("trilha"); renderTrilha(); break;
+  }
+});
+/* Enter dispara ação em cards focados (acessibilidade) */
+document.addEventListener("keydown",function(ev){
+  if(ev.key!=="Enter") return;
+  const el=document.activeElement;
+  if(el&&el.classList&&el.classList.contains("pde-poster")){ abrirCurso(el.getAttribute("data-id")); }
+});
+
+initFirebase();
+</script>
+</body>
+</html>
